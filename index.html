@@ -1,0 +1,1280 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Jimmy — Your university life, handled.</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --accent: #6C5CE7;
+      --accent-light: #a29bfe;
+      --accent-bg: rgba(108, 92, 231, 0.06);
+      --text: #1a1a2e;
+      --text-secondary: #6b7280;
+      --text-tertiary: #9ca3af;
+      --bg: #ffffff;
+      --bg-subtle: #f9fafb;
+      --border: #e5e7eb;
+      --border-light: #f3f4f6;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      -webkit-font-smoothing: antialiased;
+      overflow-x: hidden;
+      font-size: 16px;
+      line-height: 1.6;
+    }
+
+    /* ── ANIMATIONS ── */
+    .fade-in {
+      opacity: 0;
+      transform: translateY(24px);
+      transition: opacity 0.7s ease, transform 0.7s ease;
+    }
+    .fade-in.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    /* ── NAV ── */
+    nav {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 0 2rem;
+      height: 64px;
+      background: rgba(255, 255, 255, 0.85);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--border-light);
+    }
+    .nav-left { display: flex; align-items: center; gap: 0.6rem; }
+    .nav-logo {
+      display: flex; align-items: center; gap: 0.6rem;
+      font-weight: 800; font-size: 1.1rem; letter-spacing: -0.03em;
+      color: var(--text);
+      text-decoration: none;
+    }
+    .logo-icon { flex-shrink: 0; }
+    .nav-links {
+      display: flex; gap: 2rem; list-style: none;
+    }
+    .nav-links a {
+      color: var(--text-secondary); text-decoration: none;
+      font-size: 0.875rem; font-weight: 500;
+      transition: color 0.2s;
+    }
+    .nav-links a:hover { color: var(--text); }
+    .nav-right { display: flex; align-items: center; gap: 1rem; }
+    .nav-cta {
+      background: var(--text); color: var(--bg);
+      padding: 0.5rem 1.15rem; border-radius: 8px;
+      text-decoration: none; font-size: 0.875rem; font-weight: 600;
+      transition: opacity 0.2s;
+    }
+    .nav-cta:hover { opacity: 0.85; }
+
+    /* ── HERO ── */
+    .hero {
+      max-width: 800px; margin: 0 auto;
+      padding: 10rem 2rem 4rem;
+      text-align: center;
+    }
+    .hero h1 {
+      font-size: clamp(2.5rem, 6vw, 4.5rem);
+      font-weight: 800;
+      letter-spacing: -0.04em;
+      line-height: 1.08;
+      color: var(--text);
+      margin-bottom: 1.5rem;
+    }
+    .hero-sub {
+      font-size: clamp(1rem, 1.5vw, 1.15rem);
+      color: var(--text-secondary);
+      max-width: 560px;
+      margin: 0 auto 2.5rem;
+      line-height: 1.7;
+    }
+    .hero-actions {
+      display: flex; gap: 0.75rem; justify-content: center; flex-wrap: wrap;
+    }
+    .btn-primary {
+      display: inline-flex; align-items: center; gap: 0.4rem;
+      background: var(--accent); color: #fff;
+      padding: 0.75rem 1.6rem; border-radius: 10px;
+      text-decoration: none; font-weight: 600; font-size: 0.95rem;
+      transition: opacity 0.2s, transform 0.15s;
+    }
+    .btn-primary:hover { opacity: 0.9; transform: translateY(-1px); }
+    .btn-secondary {
+      display: inline-flex; align-items: center; gap: 0.4rem;
+      background: transparent;
+      border: 1px solid var(--border);
+      color: var(--text);
+      padding: 0.75rem 1.6rem; border-radius: 10px;
+      text-decoration: none; font-weight: 600; font-size: 0.95rem;
+      transition: background 0.2s, transform 0.15s;
+    }
+    .btn-secondary:hover { background: var(--bg-subtle); transform: translateY(-1px); }
+
+    /* ── INTEGRATIONS + VIDEO ── */
+    .integrations-section {
+      max-width: 1200px; margin: 0 auto;
+      padding: 4rem 2rem 8rem;
+      position: relative;
+    }
+    .integrations-canvas {
+      position: relative;
+      max-width: 1100px;
+      margin: 0 auto;
+      min-height: 700px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding-bottom: 80px;
+    }
+
+    /* Flow lines SVG */
+    .flow-lines {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      z-index: 0;
+    }
+    .flow-line {
+      fill: none;
+      stroke: #d8d5f0;
+      stroke-width: 1.5;
+      stroke-dasharray: 6 4;
+      opacity: 0.6;
+    }
+
+    /* Floating icons */
+    .float-icon {
+      position: absolute;
+      width: 64px; height: 64px;
+      border-radius: 16px;
+      background: var(--bg);
+      border: 1px solid var(--border);
+      display: flex; align-items: center; justify-content: center;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+      z-index: 2;
+      transition: box-shadow 0.3s;
+    }
+    .float-icon:hover {
+      box-shadow: 0 4px 16px rgba(0,0,0,0.1);
+    }
+    .float-icon span {
+      font-size: 0.6rem;
+      font-weight: 600;
+      color: var(--text-secondary);
+      position: absolute;
+      bottom: -20px;
+      white-space: nowrap;
+      opacity: 0;
+      transition: opacity 0.2s;
+    }
+    .float-icon:hover span { opacity: 1; }
+
+    /* Float animation */
+    @keyframes float {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-6px); }
+    }
+    .fi-gmail    { animation: float 3.5s ease-in-out infinite; }
+    .fi-gcal     { animation: float 3.8s ease-in-out 0.5s infinite; }
+    .fi-whatsapp { animation: float 3.2s ease-in-out 1.0s infinite; }
+    .fi-canvas   { animation: float 3.9s ease-in-out 1.3s infinite; }
+    .fi-campusgroups { animation: float 3.7s ease-in-out 0.9s infinite; }
+    .fi-slack    { animation: float 3.6s ease-in-out 0.3s infinite; }
+    .fi-outlook  { animation: float 3.4s ease-in-out 0.8s infinite; }
+    .fi-lbs      { animation: float 4.0s ease-in-out 0.6s infinite; }
+
+    /* Icon positions — left side */
+    .fi-gmail    { left: 0%;  top: 8%; }
+    .fi-gcal     { left: 1%;  top: 40%; }
+    .fi-whatsapp { left: 0%;  top: 72%; }
+    .fi-canvas   { left: 38%; bottom: 0; top: auto; }
+    .fi-campusgroups { left: 55%; bottom: 0; top: auto; }
+
+    /* Icon positions — right side */
+    .fi-slack    { right: 0%;  top: 8%; }
+    .fi-outlook  { right: 1%;  top: 40%; }
+    .fi-lbs      { right: 0%;  top: 72%; }
+
+    /* Video */
+    .video-container {
+      width: 70%;
+      min-height: 500px;
+      aspect-ratio: 16 / 9;
+      background: var(--bg-subtle);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      overflow: hidden;
+      display: flex; align-items: center; justify-content: center;
+      position: relative;
+      z-index: 1;
+    }
+    .video-container video,
+    .video-container iframe {
+      width: 100%; height: 100%;
+      border: none;
+      object-fit: cover;
+    }
+    .video-placeholder {
+      display: flex; flex-direction: column; align-items: center; gap: 1rem;
+      color: var(--text-tertiary);
+      font-size: 0.9rem;
+    }
+    .play-btn {
+      width: 56px; height: 56px; border-radius: 50%;
+      background: var(--accent); display: flex;
+      align-items: center; justify-content: center;
+      cursor: pointer;
+      transition: transform 0.2s, opacity 0.2s;
+    }
+    .play-btn:hover { transform: scale(1.06); opacity: 0.9; }
+    .play-btn svg { margin-left: 2px; }
+
+    /* ── PROBLEM ── */
+    .problem {
+      max-width: 960px; margin: 0 auto;
+      padding: 6rem 2rem;
+    }
+    .problem-header {
+      text-align: center;
+      margin-bottom: 4rem;
+    }
+    .problem-header h2 {
+      font-size: clamp(1.8rem, 3.5vw, 2.5rem);
+      font-weight: 800;
+      letter-spacing: -0.035em;
+      line-height: 1.15;
+      margin-bottom: 0.75rem;
+    }
+    .problem-header p {
+      color: var(--text-secondary);
+      font-size: 1rem;
+      max-width: 560px;
+      margin: 0 auto;
+      line-height: 1.7;
+    }
+    .problem-stats {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 1px;
+      background: var(--border);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      overflow: hidden;
+    }
+    .problem-stat {
+      padding: 2.25rem;
+      background: var(--bg);
+      transition: background 0.2s;
+    }
+    .problem-stat:hover { background: var(--bg-subtle); }
+    .problem-stat-icon {
+      width: 40px; height: 40px; border-radius: 10px;
+      display: flex; align-items: center; justify-content: center;
+      margin-bottom: 1rem;
+    }
+    .problem-stat-value {
+      font-size: clamp(1.8rem, 3.5vw, 2.25rem);
+      font-weight: 800;
+      letter-spacing: -0.04em;
+      color: var(--text);
+      margin-bottom: 0.35rem;
+      line-height: 1.1;
+    }
+    .problem-stat-desc {
+      font-size: 0.875rem;
+      color: var(--text-secondary);
+      line-height: 1.6;
+    }
+
+    /* ── FEATURES ── */
+    .features {
+      max-width: 960px; margin: 0 auto;
+      padding: 6rem 2rem;
+    }
+    .features-header {
+      text-align: center; margin-bottom: 4rem;
+    }
+    .features-header h2 {
+      font-size: clamp(1.8rem, 3.5vw, 2.5rem);
+      font-weight: 800;
+      letter-spacing: -0.035em;
+      line-height: 1.15;
+      margin-bottom: 0.75rem;
+    }
+    .features-header p {
+      color: var(--text-secondary);
+      font-size: 1rem;
+      max-width: 480px;
+      margin: 0 auto;
+    }
+    .features-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 1px;
+      background: var(--border);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      overflow: hidden;
+    }
+    .feature-card {
+      background: var(--bg);
+      padding: 2.25rem;
+      transition: background 0.2s;
+    }
+    .feature-card:hover { background: var(--bg-subtle); }
+    .feature-icon {
+      width: 40px; height: 40px; border-radius: 10px;
+      background: var(--accent-bg);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1.1rem;
+      margin-bottom: 1rem;
+    }
+    .feature-card h3 {
+      font-size: 1rem; font-weight: 700;
+      letter-spacing: -0.01em; margin-bottom: 0.4rem;
+      color: var(--text);
+    }
+    .feature-card p {
+      color: var(--text-secondary); font-size: 0.875rem; line-height: 1.6;
+    }
+
+    /* ── HOW IT WORKS ── */
+    .how-it-works {
+      max-width: 960px; margin: 0 auto;
+      padding: 6rem 2rem;
+    }
+    .how-header {
+      text-align: center; margin-bottom: 4rem;
+    }
+    .how-header h2 {
+      font-size: clamp(1.8rem, 3.5vw, 2.5rem);
+      font-weight: 800;
+      letter-spacing: -0.035em;
+      line-height: 1.15;
+      margin-bottom: 0.75rem;
+    }
+    .how-header p {
+      color: var(--text-secondary);
+      font-size: 1rem;
+      max-width: 480px;
+      margin: 0 auto;
+    }
+    .steps {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 2.5rem;
+    }
+    .step { text-align: center; }
+    .step-number {
+      width: 36px; height: 36px;
+      border-radius: 50%;
+      background: var(--accent-bg);
+      color: var(--accent);
+      font-weight: 700; font-size: 0.875rem;
+      display: inline-flex; align-items: center; justify-content: center;
+      margin-bottom: 1.25rem;
+    }
+    .step h3 {
+      font-size: 0.95rem; font-weight: 700;
+      margin-bottom: 0.4rem;
+      letter-spacing: -0.01em;
+    }
+    .step p {
+      color: var(--text-secondary);
+      font-size: 0.875rem;
+      line-height: 1.6;
+    }
+    .step-connector {
+      display: none;
+    }
+
+    /* ── PRICING ── */
+    .pricing {
+      max-width: 960px; margin: 0 auto;
+      padding: 6rem 2rem;
+    }
+    .pricing-header {
+      text-align: center; margin-bottom: 4rem;
+    }
+    .pricing-header h2 {
+      font-size: clamp(1.8rem, 3.5vw, 2.5rem);
+      font-weight: 800;
+      letter-spacing: -0.035em;
+      line-height: 1.15;
+      margin-bottom: 0.75rem;
+    }
+    .pricing-header p {
+      color: var(--text-secondary);
+      font-size: 1rem;
+      max-width: 480px;
+      margin: 0 auto;
+    }
+
+    /* ── Pricing table (3 columns) ── */
+    .pricing-table {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 0;
+      margin-bottom: 2.5rem;
+      position: relative;
+    }
+    .pricing-col {
+      padding: 2.25rem 1.75rem;
+      border: 1px solid var(--border);
+      margin-left: -1px;
+      display: flex;
+      flex-direction: column;
+      background: var(--bg);
+    }
+    .pricing-col:first-child {
+      border-radius: 16px 0 0 16px;
+      margin-left: 0;
+    }
+    .pricing-col:last-child {
+      border-radius: 0 16px 16px 0;
+    }
+    .pricing-col.col-popular {
+      border: 2px solid var(--accent);
+      border-radius: 16px;
+      z-index: 1;
+      margin: -12px -1px;
+      padding: 2.25rem 1.75rem 2.5rem;
+      background: var(--bg);
+      box-shadow: 0 8px 32px rgba(108, 92, 231, 0.12);
+    }
+    .col-popular-badge {
+      display: inline-block;
+      background: var(--accent);
+      color: #fff;
+      font-size: 0.65rem;
+      font-weight: 700;
+      padding: 0.25rem 0.65rem;
+      border-radius: 6px;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      margin-bottom: 1rem;
+      align-self: flex-start;
+    }
+    .pricing-col-name {
+      font-size: 0.9rem;
+      font-weight: 700;
+      color: var(--text);
+      letter-spacing: -0.01em;
+      margin-bottom: 0.25rem;
+    }
+    .pricing-col-price {
+      font-size: 2.25rem;
+      font-weight: 800;
+      color: var(--text);
+      letter-spacing: -0.04em;
+      margin-bottom: 0.15rem;
+      line-height: 1.2;
+    }
+    .pricing-col-price .period {
+      font-size: 0.85rem;
+      font-weight: 500;
+      color: var(--text-tertiary);
+      letter-spacing: 0;
+    }
+    .pricing-col-sub {
+      font-size: 0.775rem;
+      color: var(--text-tertiary);
+      margin-bottom: 1.25rem;
+    }
+    .pricing-col-divider {
+      height: 1px;
+      background: var(--border-light);
+      margin-bottom: 1.25rem;
+    }
+    .col-popular .pricing-col-divider {
+      background: rgba(108, 92, 231, 0.15);
+    }
+    .pricing-col-features {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 0.6rem;
+      flex: 1;
+    }
+    .pricing-col-features li {
+      display: flex;
+      align-items: flex-start;
+      gap: 0.5rem;
+      font-size: 0.8rem;
+      color: var(--text-secondary);
+      line-height: 1.5;
+    }
+    .pricing-col-features li svg {
+      flex-shrink: 0;
+      margin-top: 2px;
+    }
+    /* (pricing-cta removed) */
+
+    /* TAM/SAM/SOM */
+    .tam-bar {
+      background: var(--accent-bg);
+      border: 1px solid rgba(108, 92, 231, 0.12);
+      border-radius: 12px;
+      padding: 1.5rem 2rem;
+      display: flex;
+      justify-content: center;
+      gap: 3rem;
+      flex-wrap: wrap;
+    }
+    .tam-item {
+      text-align: center;
+    }
+    .tam-label {
+      font-size: 0.65rem;
+      font-weight: 700;
+      color: var(--accent);
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      margin-bottom: 0.25rem;
+    }
+    .tam-value {
+      font-size: 1.35rem;
+      font-weight: 800;
+      color: var(--text);
+      letter-spacing: -0.02em;
+    }
+    .tam-desc {
+      font-size: 0.7rem;
+      color: var(--text-tertiary);
+      margin-top: 0.15rem;
+    }
+
+    /* ── CTA ── */
+    .cta {
+      max-width: 960px; margin: 0 auto;
+      padding: 0 2rem 8rem;
+      text-align: center;
+    }
+    .cta-box {
+      background: var(--bg-subtle);
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      padding: 5rem 3rem;
+    }
+    .cta-box h2 {
+      font-size: clamp(1.8rem, 3.5vw, 2.5rem);
+      font-weight: 800;
+      letter-spacing: -0.035em;
+      line-height: 1.15;
+      margin-bottom: 1rem;
+    }
+    .cta-box p {
+      color: var(--text-secondary);
+      font-size: 1rem;
+      margin-bottom: 2rem;
+    }
+
+    /* ── FOOTER ── */
+    .footer-wrap {
+      background: var(--bg-subtle);
+      border-top: 1px solid var(--border);
+    }
+    footer {
+      max-width: 960px;
+      margin: 0 auto;
+      padding: 3rem 2rem 2.5rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 2rem;
+      flex-wrap: wrap;
+      color: var(--text-tertiary);
+      font-size: 0.825rem;
+    }
+    .footer-brand {
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+    }
+    .footer-brand-name {
+      font-weight: 800;
+      font-size: 1rem;
+      color: var(--text);
+      letter-spacing: -0.03em;
+    }
+    .footer-cols {
+      display: flex;
+      gap: 4rem;
+    }
+    .footer-col h4 {
+      font-size: 0.75rem;
+      font-weight: 600;
+      color: var(--text);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      margin-bottom: 0.75rem;
+    }
+    .footer-col ul {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+    }
+    .footer-col a {
+      color: var(--text-secondary);
+      text-decoration: none;
+      font-size: 0.825rem;
+      transition: color 0.2s;
+    }
+    .footer-col a:hover { color: var(--text); }
+    .footer-bottom {
+      width: 100%;
+      padding-top: 1.5rem;
+      margin-top: 0.5rem;
+      border-top: 1px solid var(--border-light);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      color: var(--text-tertiary);
+      font-size: 0.775rem;
+    }
+    .footer-bottom a {
+      color: var(--text-tertiary);
+      text-decoration: none;
+      transition: color 0.2s;
+    }
+    .footer-bottom a:hover { color: var(--text-secondary); }
+
+    /* ── RESPONSIVE ── */
+    @media (max-width: 768px) {
+      .nav-links { display: none; }
+      .problem-stats { grid-template-columns: 1fr; }
+      .features-grid { grid-template-columns: 1fr; }
+      .steps { grid-template-columns: 1fr; gap: 2rem; }
+      .cta-box { padding: 3rem 1.5rem; }
+      .pricing-table { grid-template-columns: 1fr; }
+      .pricing-col:first-child { border-radius: 16px 16px 0 0; }
+      .pricing-col:last-child  { border-radius: 0 0 16px 16px; }
+      .pricing-col.col-popular { margin: -1px 0; border-radius: 16px; }
+      .tam-bar { gap: 2rem; }
+
+      .integrations-canvas { min-height: auto; flex-direction: column; gap: 2rem; }
+      .video-container { width: 100%; }
+      .float-icon {
+        position: relative;
+        left: auto !important; right: auto !important;
+        top: auto !important; bottom: auto !important;
+      }
+      .flow-lines { display: none; }
+      .integrations-canvas {
+        display: grid;
+        grid-template-columns: repeat(4, 52px);
+        grid-template-rows: auto auto;
+        gap: 1rem;
+        justify-content: center;
+        justify-items: center;
+        align-items: center;
+      }
+      .video-container {
+        grid-column: 1 / -1;
+        grid-row: 1;
+        width: 100%;
+      }
+      .float-icon { grid-row: 2; }
+      .float-icon span { display: none; }
+    }
+
+    /* ── DIVIDER ── */
+    .divider {
+      border: none;
+      border-top: 1px solid var(--border);
+      max-width: 960px;
+      margin: 0 auto;
+    }
+
+    /* ── MODAL ── */
+    .modal-backdrop {
+      position: fixed; inset: 0; z-index: 1000;
+      background: rgba(0, 0, 0, 0.4);
+      backdrop-filter: blur(6px);
+      display: flex; align-items: center; justify-content: center;
+      opacity: 0; visibility: hidden;
+      transition: opacity 0.3s ease, visibility 0.3s ease;
+      padding: 1.5rem;
+    }
+    .modal-backdrop.open {
+      opacity: 1; visibility: visible;
+    }
+    .modal {
+      background: var(--bg);
+      border-radius: 20px;
+      padding: 2.75rem 2.5rem 2.25rem;
+      max-width: 440px; width: 100%;
+      position: relative;
+      box-shadow: 0 24px 80px rgba(0, 0, 0, 0.15);
+      transform: scale(0.92);
+      transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
+    .modal-backdrop.open .modal {
+      transform: scale(1);
+    }
+    .modal-close {
+      position: absolute; top: 1rem; right: 1rem;
+      width: 32px; height: 32px; border-radius: 8px;
+      border: none; background: var(--bg-subtle);
+      color: var(--text-secondary); cursor: pointer;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1.1rem; transition: background 0.2s;
+    }
+    .modal-close:hover { background: var(--border); }
+    .modal h2 {
+      font-size: 1.5rem; font-weight: 800;
+      letter-spacing: -0.03em; margin-bottom: 0.5rem;
+    }
+    .modal .modal-sub {
+      color: var(--text-secondary); font-size: 0.875rem;
+      line-height: 1.6; margin-bottom: 1.75rem;
+    }
+    .modal-field {
+      margin-bottom: 1rem;
+    }
+    .modal-field label {
+      display: block; font-size: 0.775rem; font-weight: 600;
+      color: var(--text-secondary); margin-bottom: 0.35rem;
+      text-transform: uppercase; letter-spacing: 0.04em;
+    }
+    .modal-field input,
+    .modal-field select {
+      width: 100%; padding: 0.7rem 0.85rem;
+      border: 1px solid var(--border); border-radius: 10px;
+      font-size: 0.9rem; font-family: inherit;
+      color: var(--text); background: var(--bg);
+      outline: none; transition: border-color 0.2s, box-shadow 0.2s;
+      -webkit-appearance: none; appearance: none;
+    }
+    .modal-field input::placeholder { color: var(--text-tertiary); }
+    .modal-field input:focus,
+    .modal-field select:focus {
+      border-color: var(--accent);
+      box-shadow: 0 0 0 3px rgba(108, 92, 231, 0.1);
+    }
+    .modal-field select {
+      background-image: url("data:image/svg+xml,%3Csvg width='12' height='8' viewBox='0 0 12 8' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M1 1.5L6 6.5L11 1.5' stroke='%239ca3af' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+      background-repeat: no-repeat;
+      background-position: right 0.85rem center;
+      padding-right: 2.5rem;
+    }
+    .modal-submit {
+      width: 100%; padding: 0.8rem;
+      background: var(--accent); color: #fff;
+      border: none; border-radius: 10px;
+      font-size: 0.95rem; font-weight: 700;
+      font-family: inherit; cursor: pointer;
+      transition: opacity 0.2s, transform 0.15s;
+      margin-top: 0.5rem;
+    }
+    .modal-submit:hover { opacity: 0.9; transform: translateY(-1px); }
+    .modal-fine {
+      text-align: center; font-size: 0.75rem;
+      color: var(--text-tertiary); margin-top: 1rem;
+    }
+
+    /* Success state */
+    .modal-form, .modal-success { transition: opacity 0.3s ease, transform 0.3s ease; }
+    .modal-success {
+      display: none; text-align: center;
+      padding: 2rem 0 1rem;
+    }
+    .modal-success.show { display: block; }
+    .modal-form.hide { display: none; }
+    .success-check {
+      width: 64px; height: 64px; border-radius: 50%;
+      background: rgba(108, 92, 231, 0.08);
+      display: inline-flex; align-items: center; justify-content: center;
+      margin-bottom: 1.25rem;
+    }
+    .success-check svg { stroke-dasharray: 40; stroke-dashoffset: 40; animation: drawCheck 0.5s 0.2s ease forwards; }
+    @keyframes drawCheck { to { stroke-dashoffset: 0; } }
+    .modal-success h3 {
+      font-size: 1.25rem; font-weight: 800; margin-bottom: 0.5rem;
+    }
+    .modal-success p {
+      color: var(--text-secondary); font-size: 0.875rem; line-height: 1.6;
+    }
+
+    /* Confetti */
+    @keyframes confettiFall {
+      0% { transform: translateY(-10px) rotate(0deg); opacity: 1; }
+      100% { transform: translateY(120px) rotate(360deg); opacity: 0; }
+    }
+    .confetti-piece {
+      position: absolute; width: 6px; height: 6px; border-radius: 2px;
+      animation: confettiFall 1.2s ease-out forwards;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- NAV -->
+  <nav>
+    <div class="nav-left">
+      <a href="#" class="nav-logo">
+        <svg class="logo-icon" width="28" height="28" viewBox="0 0 32 32" fill="none">
+          <rect width="32" height="32" rx="8" fill="#6C5CE7"/>
+          <text x="16" y="23" text-anchor="middle" fill="white" font-size="20" font-weight="800" font-family="Inter, -apple-system, sans-serif">J</text>
+        </svg>
+        Jimmy
+      </a>
+    </div>
+    <ul class="nav-links">
+      <li><a href="#features">Features</a></li>
+      <li><a href="#how-it-works">How it works</a></li>
+      <li><a href="#pricing">Pricing</a></li>
+      <li><a href="#demo">Demo</a></li>
+    </ul>
+    <div class="nav-right">
+      <a class="nav-cta" href="#" onclick="openModal(event)">Get Started</a>
+    </div>
+  </nav>
+
+  <!-- HERO -->
+  <section class="hero">
+    <h1 class="fade-in">Your <span style="color: var(--accent);">university life</span>,<br><span style="color: var(--accent);">handled.</span></h1>
+    <p class="hero-sub fade-in">Jimmy is an AI assistant that lives in your messages. Book rooms, manage emails, track jobs, and sync your calendar. Just text what you need.</p>
+    <div class="hero-actions fade-in">
+      <a class="btn-primary" href="#" onclick="openModal(event)">Get Started</a>
+      <a class="btn-secondary" href="#demo">Watch Demo</a>
+    </div>
+  </section>
+
+  <!-- INTEGRATIONS + VIDEO -->
+  <section class="integrations-section fade-in" id="demo">
+    <div class="integrations-canvas">
+
+      <!-- Flow lines connecting icons to video -->
+      <svg class="flow-lines" viewBox="0 0 1100 660" preserveAspectRatio="xMidYMid meet">
+        <!-- Left side lines: Gmail, Calendar, WhatsApp -->
+        <path class="flow-line" d="M 32 85 C 130 85, 200 160, 275 195" />
+        <path class="flow-line" d="M 43 295 C 140 295, 220 290, 275 290" />
+        <path class="flow-line" d="M 32 505 C 110 505, 200 400, 275 360" />
+        <!-- Bottom: Canvas -->
+        <path class="flow-line" d="M 450 500 C 440 540, 435 580, 450 625" />
+        <!-- Bottom: CampusGroups -->
+        <path class="flow-line" d="M 620 500 C 630 540, 635 580, 637 625" />
+        <!-- Right side lines: Slack, Outlook, LBS -->
+        <path class="flow-line" d="M 1068 85 C 970 85, 900 160, 825 195" />
+        <path class="flow-line" d="M 1057 295 C 960 295, 880 290, 825 290" />
+        <path class="flow-line" d="M 1068 505 C 990 505, 900 400, 825 360" />
+      </svg>
+
+      <!-- Left floating icons -->
+      <div class="float-icon fi-gmail" title="Gmail">
+        <img src="https://upload.wikimedia.org/wikipedia/commons/7/7e/Gmail_icon_%282020%29.svg" alt="Gmail" width="36" height="36" />
+        <span>Gmail</span>
+      </div>
+
+      <div class="float-icon fi-gcal" title="Google Calendar">
+        <img src="https://upload.wikimedia.org/wikipedia/commons/a/a5/Google_Calendar_icon_%282020%29.svg" alt="Google Calendar" width="36" height="36" />
+        <span>Calendar</span>
+      </div>
+
+      <div class="float-icon fi-whatsapp" title="WhatsApp">
+        <img src="https://upload.wikimedia.org/wikipedia/commons/6/6b/WhatsApp.svg" alt="WhatsApp" width="36" height="36" />
+        <span>WhatsApp</span>
+      </div>
+
+      <div class="float-icon fi-canvas" title="Canvas">
+        <img src="https://www.clipartmax.com/png/middle/295-2952166_canvas-logo-canvas-instructure-logo.png" alt="Canvas" width="36" height="36" style="object-fit: contain;" />
+        <span>Canvas</span>
+      </div>
+
+      <div class="float-icon fi-campusgroups" title="CampusGroups">
+        <img src="https://images.squarespace-cdn.com/content/v1/515eba28e4b0ecbdd5ac1a2a/1584457021090-RSC1ZPF45R02BL6GTX2K/CG_Blue_Profile+Photo.png" alt="CampusGroups" width="36" height="36" style="object-fit: contain; border-radius: 6px;" />
+        <span>CampusGroups</span>
+      </div>
+
+      <!-- Right floating icons -->
+      <div class="float-icon fi-slack" title="Slack">
+        <img src="https://upload.wikimedia.org/wikipedia/commons/d/d5/Slack_icon_2019.svg" alt="Slack" width="36" height="36" />
+        <span>Slack</span>
+      </div>
+
+      <div class="float-icon fi-outlook" title="Outlook">
+        <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/4/45/Microsoft_Office_Outlook_%282018%E2%80%932024%29.svg/960px-Microsoft_Office_Outlook_%282018%E2%80%932024%29.svg.png" alt="Outlook" width="36" height="36" />
+        <span>Outlook</span>
+      </div>
+
+      <div class="float-icon fi-lbs" title="LBS Mobile">
+        <svg width="40" height="40" viewBox="0 0 32 32" fill="none">
+          <circle cx="16" cy="16" r="16" fill="#1a1a2e"/>
+          <text x="16" y="18.5" text-anchor="middle" fill="white" font-size="9" font-weight="700" font-family="Inter, sans-serif">LBS</text>
+        </svg>
+        <span>LBS Mobile</span>
+      </div>
+
+      <!-- Video -->
+      <div class="video-container">
+        <video src="replitanimation.mp4" autoplay muted loop playsinline></video>
+      </div>
+
+    </div>
+  </section>
+
+  <hr class="divider" />
+
+  <!-- PROBLEM -->
+  <section class="problem">
+    <div class="problem-header fade-in">
+      <h2>Students waste 10+ hours<br>per week on admin</h2>
+      <p>Every student juggles booking rooms, managing emails, tracking job deadlines, and coordinating schedules across 5+ platforms. The same repetitive tasks, repeated daily.</p>
+    </div>
+    <div class="problem-stats fade-in">
+      <div class="problem-stat">
+        <div class="problem-stat-icon" style="background: var(--accent-bg);">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#6C5CE7" stroke-width="2" stroke-linecap="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+        </div>
+        <div class="problem-stat-value">70+</div>
+        <div class="problem-stat-desc">Emails received per week</div>
+      </div>
+      <div class="problem-stat">
+        <div class="problem-stat-icon" style="background: var(--accent-bg);">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#6C5CE7" stroke-width="2" stroke-linecap="round"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
+        </div>
+        <div class="problem-stat-value">5+</div>
+        <div class="problem-stat-desc">Platforms used daily for simple admin</div>
+      </div>
+      <div class="problem-stat">
+        <div class="problem-stat-icon" style="background: var(--accent-bg);">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#6C5CE7" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+        </div>
+        <div class="problem-stat-value">15 min</div>
+        <div class="problem-stat-desc">To book one room and reply to one email</div>
+      </div>
+    </div>
+  </section>
+
+  <hr class="divider" />
+
+  <!-- FEATURES -->
+  <section class="features" id="features">
+    <div class="features-header fade-in">
+      <h2>Everything you need,<br>one message away</h2>
+      <p>No apps to download. No portals to navigate. Just tell Jimmy what you need.</p>
+    </div>
+    <div class="features-grid fade-in">
+      <div class="feature-card">
+        <div class="feature-icon">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#6C5CE7" stroke-width="2" stroke-linecap="round">
+            <rect x="3" y="4" width="18" height="18" rx="2"/>
+            <line x1="16" y1="2" x2="16" y2="6"/>
+            <line x1="8" y1="2" x2="8" y2="6"/>
+            <line x1="3" y1="10" x2="21" y2="10"/>
+          </svg>
+        </div>
+        <h3>Calendar Sync</h3>
+        <p>Automatically syncs your bookings, deadlines, and meetings to your calendar.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#6C5CE7" stroke-width="2" stroke-linecap="round">
+            <path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/>
+            <polyline points="9 22 9 12 15 12 15 22"/>
+          </svg>
+        </div>
+        <h3>LBS Portals</h3>
+        <p>Text "book me a room tomorrow at 3pm" and it's done. Or ask it to look at CampusGroups and recommend events that you could enjoy.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#6C5CE7" stroke-width="2" stroke-linecap="round">
+            <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/>
+            <polyline points="22,6 12,13 2,6"/>
+          </svg>
+        </div>
+        <h3>Email Assistant</h3>
+        <p>Monitors your inbox, summarizes what matters, drafts replies in your tone, and sends them with your approval. Never miss an important email again.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#6C5CE7" stroke-width="2" stroke-linecap="round">
+            <rect x="2" y="7" width="20" height="14" rx="2"/>
+            <path d="M16 7V5a4 4 0 00-8 0v2"/>
+            <line x1="12" y1="12" x2="12" y2="16"/>
+          </svg>
+        </div>
+        <h3>Job Tracker</h3>
+        <p>Tailored CVs, cover letters, and application tracking. Your career assistant in one chat.</p>
+      </div>
+    </div>
+  </section>
+
+  <hr class="divider" />
+
+  <!-- HOW IT WORKS -->
+  <section class="how-it-works" id="how-it-works">
+    <div class="how-header fade-in">
+      <h2>Simple by design</h2>
+      <p>Three steps. No setup required.</p>
+    </div>
+    <div class="steps fade-in">
+      <div class="step">
+        <div class="step-number">1</div>
+        <h3>Connect your accounts</h3>
+        <p>Link Gmail, Google Calendar, and your LBS portal in one tap.</p>
+      </div>
+      <div class="step">
+        <div class="step-number">2</div>
+        <h3>Text Jimmy what you need</h3>
+        <p>Send a message on Telegram, just like texting a friend.</p>
+      </div>
+      <div class="step">
+        <div class="step-number">3</div>
+        <h3>Done. Jimmy handles the rest.</h3>
+        <p>Rooms booked, emails answered, calendar updated. All confirmed back to you.</p>
+      </div>
+    </div>
+  </section>
+
+  <hr class="divider" />
+
+  <!-- PRICING -->
+  <section class="pricing" id="pricing">
+    <div class="pricing-header fade-in">
+      <h2>Simple, transparent pricing</h2>
+      <p>Start free. Upgrade when you're ready.</p>
+    </div>
+
+    <div class="pricing-table fade-in">
+      <!-- Free -->
+      <div class="pricing-col">
+        <span class="pricing-col-name">Free</span>
+        <span class="pricing-col-price">£0</span>
+        <span class="pricing-col-sub">Free forever</span>
+        <div class="pricing-col-divider"></div>
+        <ul class="pricing-col-features">
+          <li><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#6C5CE7" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>Room booking</li>
+          <li><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#6C5CE7" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>Email summaries</li>
+          <li><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#6C5CE7" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>Calendar sync</li>
+          <li><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#6C5CE7" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>5 messages / day</li>
+        </ul>
+      </div>
+      <!-- Pro -->
+      <div class="pricing-col col-popular">
+        <span class="col-popular-badge">Most Popular</span>
+        <span class="pricing-col-name">Pro</span>
+        <span class="pricing-col-price">£10 <span class="period">/mo</span></span>
+        <span class="pricing-col-sub">Best for recruiting season</span>
+        <div class="pricing-col-divider"></div>
+        <ul class="pricing-col-features">
+          <li><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#6C5CE7" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>Everything in Free</li>
+          <li><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#6C5CE7" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>Email replies &amp; drafting</li>
+          <li><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#6C5CE7" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>Job tracker &amp; deadline alerts</li>
+          <li><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#6C5CE7" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>Unlimited messages</li>
+        </ul>
+      </div>
+      <!-- Premium -->
+      <div class="pricing-col">
+        <span class="pricing-col-name">Premium</span>
+        <span class="pricing-col-price">£20 <span class="period">/mo</span></span>
+        <span class="pricing-col-sub">For power users</span>
+        <div class="pricing-col-divider"></div>
+        <ul class="pricing-col-features">
+          <li><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#6C5CE7" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>Everything in Pro</li>
+          <li><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#6C5CE7" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>Custom automations</li>
+          <li><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#6C5CE7" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>Priority response time</li>
+          <li><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#6C5CE7" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>Early access to new skills</li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- TAM / SAM / SOM -->
+    <div class="tam-bar fade-in">
+      <div class="tam-item">
+        <div class="tam-label">TAM</div>
+        <div class="tam-value">200M+</div>
+        <div class="tam-desc">University students globally</div>
+      </div>
+      <div class="tam-item">
+        <div class="tam-label">SAM</div>
+        <div class="tam-value">2M+</div>
+        <div class="tam-desc">Business school students worldwide</div>
+      </div>
+      <div class="tam-item">
+        <div class="tam-label">SOM</div>
+        <div class="tam-value">50K</div>
+        <div class="tam-desc">UK target in Year 1</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA -->
+  <section class="cta">
+    <div class="cta-box fade-in">
+      <h2>Try Jimmy now</h2>
+      <p>Open Telegram and say hello. It takes 10 seconds.</p>
+      <a class="btn-primary" href="#" onclick="openModal(event)">Join the Waitlist</a>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <div class="footer-wrap">
+  <footer>
+    <div class="footer-brand">
+      <div style="display: flex; align-items: center; gap: 0.6rem;">
+        <svg class="logo-icon" width="24" height="24" viewBox="0 0 32 32" fill="none">
+          <rect width="32" height="32" rx="8" fill="#6C5CE7"/>
+          <text x="16" y="23" text-anchor="middle" fill="white" font-size="20" font-weight="800" font-family="Inter, -apple-system, sans-serif">J</text>
+        </svg>
+        <span class="footer-brand-name">Jimmy</span>
+      </div>
+      <span>AI assistant for university life.</span>
+    </div>
+    <div class="footer-cols">
+      <div class="footer-col">
+        <h4>Product</h4>
+        <ul>
+          <li><a href="#features">Features</a></li>
+          <li><a href="#how-it-works">How it works</a></li>
+          <li><a href="#demo">Demo</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4>Connect</h4>
+        <ul>
+          <li><a href="https://t.me/ale_jimmy_bot" target="_blank">Telegram</a></li>
+          <li><a href="#" onclick="openModal(event)">Get Started</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span>@HackLBS26 &middot; London Business School</span>
+    </div>
+  </footer>
+  </div>
+
+  <!-- WAITLIST MODAL -->
+  <div class="modal-backdrop" id="modalBackdrop">
+    <div class="modal" id="modal">
+      <button class="modal-close" onclick="closeModal()">&times;</button>
+
+      <div class="modal-form" id="modalForm">
+        <h2>Be the first to try Jimmy</h2>
+        <p class="modal-sub">We're rolling out Jimmy to select universities. Drop your email and we'll notify you when it's live.</p>
+        <form onsubmit="submitWaitlist(event)">
+          <div class="modal-field">
+            <label for="wl-email">Email</label>
+            <input type="email" id="wl-email" placeholder="your.name@university.edu" required />
+          </div>
+          <div class="modal-field">
+            <label for="wl-uni">Your university</label>
+            <select id="wl-uni" required>
+              <option value="" disabled selected>Select your university</option>
+              <option value="London Business School">London Business School</option>
+              <option value="Imperial College">Imperial College</option>
+              <option value="UCL">UCL</option>
+              <option value="Oxford">Oxford</option>
+              <option value="Cambridge">Cambridge</option>
+              <option value="Other">Other</option>
+            </select>
+          </div>
+          <button type="submit" class="modal-submit">Join the Waitlist</button>
+        </form>
+        <p class="modal-fine">No spam. Just early access.</p>
+      </div>
+
+      <div class="modal-success" id="modalSuccess">
+        <div class="success-check">
+          <svg width="32" height="32" viewBox="0 0 32 32" fill="none">
+            <path d="M8 16.5L13.5 22L24 11" stroke="#6C5CE7" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </div>
+        <h3>You're on the list!</h3>
+        <p>We'll reach out as soon as Jimmy is ready at your university. Stay tuned.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- SCRIPTS -->
+  <script>
+    // Scroll fade-in
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) entry.target.classList.add('visible');
+      });
+    }, { threshold: 0.1 });
+    document.querySelectorAll('.fade-in').forEach(el => observer.observe(el));
+
+    // Modal
+    const backdrop = document.getElementById('modalBackdrop');
+    const modal = document.getElementById('modal');
+    const form = document.getElementById('modalForm');
+    const success = document.getElementById('modalSuccess');
+
+    function openModal(e) {
+      if (e) e.preventDefault();
+      form.classList.remove('hide');
+      success.classList.remove('show');
+      backdrop.classList.add('open');
+      document.body.style.overflow = 'hidden';
+    }
+
+    function closeModal() {
+      backdrop.classList.remove('open');
+      document.body.style.overflow = '';
+    }
+
+    backdrop.addEventListener('click', (e) => {
+      if (e.target === backdrop) closeModal();
+    });
+
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') closeModal();
+    });
+
+    function submitWaitlist(e) {
+      e.preventDefault();
+      const email = document.getElementById('wl-email').value;
+      const uni = document.getElementById('wl-uni').value;
+
+      // Save to localStorage
+      const entries = JSON.parse(localStorage.getItem('jimmy_waitlist') || '[]');
+      entries.push({ email, uni, ts: new Date().toISOString() });
+      localStorage.setItem('jimmy_waitlist', JSON.stringify(entries));
+
+      // Show success
+      form.classList.add('hide');
+      success.classList.add('show');
+      spawnConfetti();
+    }
+
+    function spawnConfetti() {
+      const colors = ['#6C5CE7', '#a29bfe', '#fd79a8', '#ffeaa7', '#55efc4', '#74b9ff'];
+      const container = modal;
+      for (let i = 0; i < 40; i++) {
+        const piece = document.createElement('div');
+        piece.classList.add('confetti-piece');
+        piece.style.left = Math.random() * 100 + '%';
+        piece.style.top = Math.random() * 30 + '%';
+        piece.style.background = colors[Math.floor(Math.random() * colors.length)];
+        piece.style.animationDelay = Math.random() * 0.5 + 's';
+        piece.style.animationDuration = (0.8 + Math.random() * 0.8) + 's';
+        container.appendChild(piece);
+        setTimeout(() => piece.remove(), 2000);
+      }
+    }
+  </script>
+
+</body>
+</html>
